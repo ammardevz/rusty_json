@@ -1,5 +1,5 @@
-mod base;
-mod extra;
+pub mod base;
+pub mod extra;
 
 #[cfg(test)]
 mod tests {
