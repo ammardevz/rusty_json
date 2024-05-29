@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter};
 use crate::base::json_arr::JsonArray;
 use crate::base::json_o::JsonObject;
 
+#[derive(Clone)]
 pub enum JsonValue {
     String(String),
     Number(JsonNumber),
@@ -12,6 +13,7 @@ pub enum JsonValue {
     Null,
 }
 
+#[derive(Clone)]
 pub enum JsonNumber {
     I8(i8),
     I16(i16),
@@ -43,6 +45,20 @@ impl From<&str> for JsonValue {
     }
 }
 
+impl<T> From<Vec<T>> for JsonValue
+    where
+        T: Into<JsonValue>,
+{
+    fn from(json_values: Vec<T>) -> Self {
+        let mut arr = JsonArray::new();
+        for i in json_values {
+            arr.push(i.into());
+        }
+        JsonValue::Array(arr)
+    }
+}
+
+
 impl From<JsonValue> for JsonArray {
     fn from(value: JsonValue) -> Self {
         match value {
@@ -56,7 +72,7 @@ impl From<JsonValue> for JsonObject {
     fn from(value: JsonValue) -> Self {
         match value {
             JsonValue::Object(obj) => obj,
-            _ => JsonObject::new(), // Alternatively, you can return an empty object or handle differently
+            _ => JsonObject::new(), // Alternatively, return an empty object or handle differently
         }
     }
 }

@@ -1,10 +1,27 @@
 #![allow(dead_code)]
+
 use std::fmt::{Display, Formatter};
 use std::slice::Iter;
 
 use crate::base::json_v::JsonValue;
 
+#[derive(Clone)]
 pub struct JsonArray (Vec<JsonValue>);
+
+impl<T> From<Vec<T>> for JsonArray
+    where
+        T: Into<JsonValue>
+{
+    fn from(json_values: Vec<T>) -> Self {
+        let mut arr = JsonArray::new();
+        for i in json_values {
+            arr.push(i.into());
+        }
+        arr
+    }
+}
+
+
 
 impl JsonArray {
     pub fn new() -> Self {

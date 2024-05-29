@@ -6,7 +6,7 @@ use std::fmt::{Display, Formatter};
 
 use crate::base::json_v::JsonValue;
 
-#[derive()]
+#[derive(Clone)]
 pub struct JsonObject (HashMap<String, JsonValue>);
 
 impl JsonObject {
