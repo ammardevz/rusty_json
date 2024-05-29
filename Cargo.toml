@@ -1,7 +1,12 @@
 [package]
 name = "rusty_json"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
+authors = ["Ammar Dev"]
+description = "A simple library/crate to create and read and write json"
+homepage = "https://github.com/ammardevz/rusty_json"
+license = "MIT"
+
 
 [dependencies]
 lazy_static = "1.4.0"
