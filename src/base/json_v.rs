@@ -45,6 +45,13 @@ impl From<&str> for JsonValue {
     }
 }
 
+impl From<&String> for JsonValue {
+    fn from(value: &String) -> Self {
+        JsonValue::String(value.to_string())
+    }
+}
+
+
 impl<T> From<Vec<T>> for JsonValue
     where
         T: Into<JsonValue>,
