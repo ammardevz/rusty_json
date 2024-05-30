@@ -175,7 +175,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 # Copyrights
 
 All rights reserved for Ammar Dev <br>
-This project is licensed with [MIT LICENSE](/LICENSE)
+This project is licensed with [MIT LICENSE](https://github.com/ammardevz/rusty_json/blob/master/LICENSE)
 
 
 
