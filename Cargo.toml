@@ -1,15 +1,17 @@
 [package]
 name = "rusty_json"
-version = "1.0.0"
+version = "1.2.1"
 edition = "2021"
 authors = ["Ammar Dev"]
-description = "A simple library/crate to create and read and write json"
-homepage = "https://github.com/ammardevz/rusty_json"
+description = "A lightweight and efficient library for creating, reading, and writing JSON in Rust"
+repository = "https://github.com/ammardevz/rusty_json"
 license = "MIT"
 
-
 [dependencies]
-lazy_static = "1.4.0"
+indexmap = "2.2.6"
 jsonparser = "0.2.1"
-quote = "1.0.36"
-syn = "2.0.66"
+rusty_json_serialization = {path = "src/rusty_json_serialization", optional = true}
+thiserror = "1.0.61"
+
+[features]
+serialization = ["rusty_json_serialization"]

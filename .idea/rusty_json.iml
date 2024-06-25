@@ -3,9 +3,14 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/base/src" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/src/base/target" />
+      <sourceFolder url="file://$MODULE_DIR$/src/extra/serialization/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rusty_json_serialization/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/rusty_json_serialization/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/src/extra/serialization/target" />
+      <excludeFolder url="file://$MODULE_DIR$/src/rusty_json_serialization/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/rusty_json_serialization/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

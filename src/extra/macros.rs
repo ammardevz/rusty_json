@@ -1,16 +1,16 @@
 #[macro_export]
 macro_rules! json {
     // Match an entire JSON object with key-value pairs
-    ({ $( $k:expr => $v:tt ),* }) => {{
-        let mut obj = $crate::base::json_o::JsonObject::new();
+    ({ $( $k:ident : $v:tt ),* }) => {{
+        let mut obj = $crate::base::JsonObject::new();
         $(
-            obj.set($k, json!($v));
+            obj.set(stringify!($k), json!($v));
         )*
         obj
     }};
     // Match an array of values
     ([ $( $elem:tt ),* ]) => {{
-        let mut arr = $crate::base::json_arr::JsonArray::new();
+        let mut arr = $crate::base::JsonArray::new();
         $(
             arr.push(json!($elem));
         )*
@@ -18,6 +18,6 @@ macro_rules! json {
     }};
     // Match a string literal or other expressions
     ($other:expr) => {{
-        $crate::base::json_v::JsonValue::from($other)
+        $crate::base::JsonValue::from($other)
     }};
 }
