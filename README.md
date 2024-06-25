@@ -1,7 +1,7 @@
 
 # Rusty Json 
 
-a Simple json library for rust, it has various ways to use and the library/crate its totally written in rust its still under development 
+A lightweight and efficient library for creating, reading, and writing JSON in Rust
 
 #  Usage
 
@@ -54,13 +54,31 @@ println!("{}", json_arr);
 - Json Value
 
 ```rust
-let json_string_value = JsonValue::String("Hello".to_string());
-let json_number_value_1 = JsonValue::Number(JsonNumber::I32(3453));
-let json_number_value_2 = JsonValue::Number(4234001.into());
-let json_value_bool = JsonValue::Boolean(false);
-let json_null_value = JsonValue::Null;
-let json_value_obj = JsonValue::Object(JsonObject::new());
-let json_value_arr = JsonValue::Array(JsonArray::new());
+fn main() -> Result<(), Box<dyn Error>> {
+    // Creating JSON values of different types
+    let string_value = JsonValue::String("Hello".to_string());
+    let number_value_1 = JsonValue::Number(3453f64);
+    let number_value_2 = JsonValue::Number(4234001f64);
+    let bool_value = JsonValue::Boolean(false);
+    let null_value = JsonValue::Null;
+    let object_value = JsonValue::Object(JsonObject::new());
+    let array_value = JsonValue::Array(JsonArray::new());
+
+    // Parsing the JSON values into Rust types
+    let parsed_string: String = string_value.parse()?;
+    let parsed_number_1: f64 = number_value_1.parse()?;
+    let parsed_number_2: i32 = number_value_2.parse()?;
+    let parsed_bool: bool = bool_value.parse()?;
+
+    // Printing the parsed values
+    println!("Parsed String: {}", parsed_string);
+    println!("Parsed Number 1: {}", parsed_number_1);
+    println!("Parsed Number 2: {}", parsed_number_2);
+    println!("Parsed Bool: {}", parsed_bool);
+
+    // Indicating that the main function completed successfully
+    Ok(())
+}
 ```
 
 ## Extra
@@ -87,7 +105,7 @@ println!("{}", json_obj);
 {"name": "Ammar Dev", "age": 99, "email": "AmmarDev@example.com", "isEmployed": false}
 ```
 
-- Prettier
+- Formatter
 
 ```rust
 let mut json_obj = JsonObject::new();
@@ -100,8 +118,8 @@ json_arr.push("Hello");
 
 json_obj.set("list_example", json_arr);
 
-extra::prettier::set_indent(2); // indent is 2 by default
-println!("{}", extra::prettier::pretty_string(json_obj).unwrap());
+let formatter = JsonFormatter::default();
+println!("{}", formatter.format(json_obj));
 ```
 
 ```json
@@ -121,8 +139,8 @@ println!("{}", extra::prettier::pretty_string(json_obj).unwrap());
 
 ```rust
 let json_obj = json!({
-    "name" => "Ammar Dev",
-    "Age" => 99
+    name: "Ammar Dev",
+    Age: 99
 }); // will produce JsonObject
 
 let json_arr = json!([
@@ -137,7 +155,7 @@ let json_val = json!("Hello"); // will Produce JsonValue
 
 # Implementing
 
-- Json Entity
+- Json Entity (manually)
 
 ```rust
 struct User {
@@ -146,11 +164,11 @@ struct User {
 }
 
 impl JsonEntity for User {
-    fn to_json_object(&self) -> JsonObject {
+    fn to_json(&self) -> JsonValue {
         let mut obj = JsonObject::new();
         obj.set("name", &self.name);
-        obj.set("age", self.age);
-        obj
+        obj.set("age", &self.age);
+        JsonValue::Object(obj)
     }
 }
 
@@ -162,7 +180,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
 
-    println!("{}", u.to_json_object());
+    println!("{}", u.to_json());
 
     Ok(())
 }
@@ -171,6 +189,35 @@ fn main() -> Result<(), Box<dyn Error>> {
 ```json
 {"name": "Ammar Dev", "age": 22}
 ```
+
+- Json Entity (Auto) [`Requires: serializing feature`]
+
+```rust
+use std::error::Error;
+use rusty_json::extra::JsonEntity;
+
+#[derive(JsonEntity, Clone)]
+struct User {
+    name: String,
+    age: i32,
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+
+    let u = User {
+        name: "Ammar Dev".to_string(),
+        age: 22,
+    };
+
+    println!("{}", u.to_json());
+
+    Ok(())
+}
+```
+```json
+{"name": "Ammar Dev", "age": 22}
+```
+
 
 # Copyrights
 
