@@ -3,6 +3,8 @@
 
 A lightweight and efficient library for creating, reading, and writing JSON in Rust
 
+*"In-code docs coming in the next updates."*
+
 #  Usage
 
 ## Base 
