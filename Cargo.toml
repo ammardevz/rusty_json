@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 authors = ["Ammar Dev"]
 description = "A simple library/crate to create and read and write json"
-homepage = "https://github.com/ammardevz/rusty_json"
+repository = "https://github.com/ammardevz/rusty_json"
 license = "MIT"
 
 
