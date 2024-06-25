@@ -3,9 +3,9 @@ name = "rusty_json_serialization"
 version = "1.0.0"
 edition = "2021"
 authors = ["Ammar Dev"]
+description = "Provides procedural macros for automated JSON serialization in Rust."
 repository = "https://github.com/ammardevz/rusty_json/tree/master/src/rusty_json_serialization"
 license = "MIT"
-
 
 [dependencies]
 syn = "2.0.67"
