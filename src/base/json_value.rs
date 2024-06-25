@@ -16,12 +16,11 @@ pub enum JsonValue {
     Array(JsonArray),
 }
 
-type ParseError = CastError;
 
 impl JsonValue {
-    pub fn parse<T>(&self) -> Result<T, ParseError>
+    pub fn parse<T>(&self) -> Result<T, CastError>
         where
-            T: for<'a> TryFrom<&'a JsonValue, Error = ParseError>,
+            T: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
     {
         match T::try_from(self) {
             Ok(value) => Ok(value),

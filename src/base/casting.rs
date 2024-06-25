@@ -40,6 +40,28 @@ impl TryFrom<&JsonValue> for String {
     }
 }
 
+impl TryFrom<JsonValue> for bool {
+    type Error = CastError;
+
+    fn try_from(value: JsonValue) -> Result<Self, Self::Error> {
+        match value {
+            JsonValue::Boolean(bool) => Ok(bool),
+            _ => Err(CastError::InvalidType)
+        }
+    }
+}
+
+impl TryFrom<&JsonValue> for bool {
+    type Error = CastError;
+
+    fn try_from(value: &JsonValue) -> Result<Self, Self::Error> {
+        match value {
+            JsonValue::Boolean(bool) => Ok(*bool),
+            _ => Err(CastError::InvalidType)
+        }
+    }
+}
+
 
 
 /// Registering TryFrom .... for integers
