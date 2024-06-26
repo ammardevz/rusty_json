@@ -4,7 +4,8 @@ pub mod macros;
 mod json_parser;
 
 pub use json_entity::JsonEntity;
-#[cfg(feature="{serialization}")]
+
+#[cfg(feature = "serialization")]
 pub use rusty_json_serialization::JsonEntity;
 
 pub type JsonFormatter = json_formatter::JsonFormatter;

@@ -1,7 +1,15 @@
+
+
 #[cfg(test)]
 mod tests {
     use rusty_json::base::JsonObject;
-    use rusty_json::extra::JsonParser;
+    use rusty_json::extra::{JsonEntity, JsonParser};
+
+    #[derive(JsonEntity, Clone)]
+    struct User {
+        name: String,
+        age: i32
+    }
 
     #[test]
     fn test_parse_simple_json() {
