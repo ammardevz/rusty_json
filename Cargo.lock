@@ -31,6 +31,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "924a34a53a6770bac6c4c6af2ee1bf50ad20e0d850d9458e9caff1901b0ff1cf"
 
 [[package]]
+name = "memchr"
+version = "2.7.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+
+[[package]]
+name = "minimal-lexical"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
+
+[[package]]
+name = "nom"
+version = "7.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
+dependencies = [
+ "memchr",
+ "minimal-lexical",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -50,17 +72,18 @@ dependencies = [
 
 [[package]]
 name = "rusty_json"
-version = "1.2.2"
+version = "2.0.0"
 dependencies = [
  "indexmap",
  "jsonparser",
+ "nom",
  "rusty_json_serialization",
  "thiserror",
 ]
 
 [[package]]
 name = "rusty_json_serialization"
-version = "1.0.0"
+version = "1.2.0"
 dependencies = [
  "proc-macro2",
  "quote",

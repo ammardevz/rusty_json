@@ -7,6 +7,8 @@ use crate::base::casting::CastError;
 use crate::base::json_array::JsonArray;
 use crate::base::json_object::JsonObject;
 
+/// Represents a JSON value, which can be a string, number, boolean, null, object, or array.
+#[derive(Debug)]
 pub enum JsonValue {
     String(String),
     Number(f64),
@@ -16,8 +18,12 @@ pub enum JsonValue {
     Array(JsonArray),
 }
 
-
 impl JsonValue {
+    /// Parses the JSON value into a specified type `T`, returning a result.
+    ///
+    /// # Errors
+    ///
+    /// Returns a `CastError` if parsing fails or the type conversion is not possible.
     pub fn parse<T>(&self) -> Result<T, CastError>
         where
             T: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
@@ -277,6 +283,12 @@ impl From<bool> for JsonValue {
     }
 }
 
+impl From<&bool> for JsonValue {
+    fn from(value: &bool) -> Self {
+        JsonValue::Boolean(value.clone())
+    }
+}
+
 impl From<JsonObject> for JsonValue {
     fn from(value: JsonObject) -> Self {
         JsonValue::Object(value)
@@ -384,5 +396,32 @@ impl<K, V> From<IndexMap<K, V>> for JsonValue
             obj.set(k.into(), v.into());
         }
         JsonValue::Object(obj)
+    }
+}
+
+
+impl From<()> for JsonValue {
+    fn from(_value: ()) -> Self {
+        JsonValue::Null
+    }
+}
+
+impl<T> From<Option<T>> for JsonValue
+    where T: Into<JsonValue> {
+    fn from(value: Option<T>) -> Self {
+        match value {
+            Some(v) => v.into(),
+            None => JsonValue::Null,
+        }
+    }
+}
+
+impl<T> From<&Option<T>> for JsonValue
+    where T: Clone + Into<JsonValue> {
+    fn from(value: &Option<T>) -> Self {
+        match value {
+            Some(v) => v.clone().into(),
+            None => JsonValue::Null,
+        }
     }
 }

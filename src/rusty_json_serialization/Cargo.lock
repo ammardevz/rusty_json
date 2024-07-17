@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "rusty_json_serialization"
-version = "1.0.0"
+version = "1.2.0"
 dependencies = [
  "proc-macro2",
  "quote",

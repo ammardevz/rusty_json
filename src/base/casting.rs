@@ -2,13 +2,18 @@ use thiserror::Error;
 
 use crate::base::json_value::JsonValue;
 
+/// Errors that can occur during casting operations.
 #[derive(Debug, Error)]
 pub enum CastError {
+    /// Indicates that the type for casting is invalid.
     #[error("Invalid type for cast")]
     InvalidType,
+
+    /// Indicates that the value is out of the acceptable range for casting.
     #[error("Value out of range")]
     OutOfRange,
 }
+
 
 impl TryFrom<JsonValue> for String {
     type Error = CastError;
@@ -61,6 +66,7 @@ impl TryFrom<&JsonValue> for bool {
         }
     }
 }
+
 
 
 
