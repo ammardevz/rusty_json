@@ -1,4 +1,5 @@
 use thiserror::Error;
+use crate::base::json_value;
 
 use crate::base::json_value::JsonValue;
 
@@ -12,6 +13,10 @@ pub enum CastError {
     /// Indicates that the value is out of the acceptable range for casting.
     #[error("Value out of range")]
     OutOfRange,
+
+    /// Indicates that a required field was not found in the JSON structure.
+    #[error("Field not found: {0}")]
+    FieldNotFound(String),
 }
 
 
@@ -67,7 +72,44 @@ impl TryFrom<&JsonValue> for bool {
     }
 }
 
+/// Implement TryFrom<&JsonValue> for Vec<T> where T: TryFrom<&JsonValue>
+impl<T> TryFrom<&JsonValue> for Vec<T>
+    where
+        T: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
+{
+    type Error = CastError;
 
+    fn try_from(json_value: &JsonValue) -> Result<Self, Self::Error> {
+        match json_value {
+            JsonValue::Array(arr) => {
+                arr.iter()
+                    .map(|item| T::try_from(item))
+                    .collect::<Result<Vec<T>, _>>()
+            }
+            _ => Err(CastError::InvalidType),
+        }
+    }
+}
+
+/// Implement TryFrom<JsonValue> for Vec<T> where T: Into<JsonValue>
+/// Implement TryFrom<JsonValue> for Vec<T> where T: Into<JsonValue>
+impl<T> TryFrom<JsonValue> for Vec<T>
+    where
+        T: TryFrom<JsonValue, Error = CastError>,
+{
+    type Error = CastError;
+
+    fn try_from(json_value: JsonValue) -> Result<Self, Self::Error> {
+        match json_value {
+            JsonValue::Array(arr) => {
+                arr.iter().into_iter()
+                    .map(|value: &JsonValue| T::try_from(value.clone()))
+                    .collect::<Result<Vec<T>, _>>()
+            }
+            _ => Err(CastError::InvalidType),
+        }
+    }
+}
 
 
 /// Registering TryFrom .... for integers

@@ -26,6 +26,8 @@ impl From<CastError> for ConversationError {
         match error {
             CastError::InvalidType => ConversationError::ParsingError("Invalid type for cast".to_string()),
             CastError::OutOfRange => ConversationError::ParsingError("Value out of range".to_string()),
+
+            CastError::FieldNotFound(_) => ConversationError::GenericError("Field not found".to_string())
         }
     }
 }

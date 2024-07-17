@@ -72,7 +72,7 @@ dependencies = [
 
 [[package]]
 name = "rusty_json"
-version = "2.0.0"
+version = "2.0.1"
 dependencies = [
  "indexmap",
  "jsonparser",
@@ -83,7 +83,7 @@ dependencies = [
 
 [[package]]
 name = "rusty_json_serialization"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "proc-macro2",
  "quote",
