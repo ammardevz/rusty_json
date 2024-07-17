@@ -5,6 +5,9 @@ mod json_parser;
 
 pub use json_entity::JsonEntity;
 
+pub use json_parser::ConversationError;
+
+
 #[cfg(feature = "serialization")]
 pub use rusty_json_serialization::JsonEntity;
 

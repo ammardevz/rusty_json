@@ -6,6 +6,7 @@ use indexmap::IndexMap;
 use indexmap::map::{IntoIter, Iter, Keys, Values};
 use crate::base::json_value::JsonValue;
 
+/// Represents a JSON object containing key-value pairs of strings and `JsonValue`s.
 pub struct JsonObject {
     index_map: IndexMap<String, JsonValue>
 }
@@ -50,88 +51,143 @@ impl Index<&str> for JsonObject {
     }
 }
 impl JsonObject {
+    /// Creates a new, empty `JsonObject`.
     pub fn new() -> Self {
         JsonObject {
             index_map: IndexMap::new(),
         }
     }
 
+    /// Sets a key-value pair in the `JsonObject`.
+    ///
+    /// If the key already exists, its corresponding value is overwritten.
     pub fn set<K, V>(&mut self, k: K, v: V)
-    where K: Into<String>,
-          V: Into<JsonValue>,
+        where
+            K: Into<String>,
+            V: Into<JsonValue>,
     {
         self.index_map.insert(k.into(), v.into());
     }
 
+    /// Retrieves a reference to the value corresponding to the given key.
+    ///
+    /// Returns `None` if the key does not exist in the `JsonObject`.
     pub fn get<K>(&self, k: K) -> Option<&JsonValue>
-    where K: Into<String>,
+        where
+            K: Into<String>,
     {
         self.index_map.get(&k.into())
     }
 
+    /// Retrieves a mutable reference to the value corresponding to the given key.
+    ///
+    /// Returns `None` if the key does not exist in the `JsonObject`.
     pub fn get_mut<K>(&mut self, k: K) -> Option<&mut JsonValue>
-    where K: Into<String>,
+        where
+            K: Into<String>,
     {
         self.index_map.get_mut(&k.into())
     }
 
+    /// Removes and returns the value corresponding to the given key from the `JsonObject`.
+    ///
+    /// Returns `None` if the key does not exist in the `JsonObject`.
     pub fn del<K>(&mut self, k: K)
-    where K: Into<String>,
+        where
+            K: Into<String>,
     {
         self.index_map.swap_remove(&k.into());
     }
 
+    /// Checks if the `JsonObject` contains the specified key.
     pub fn contains_key<K>(&self, k: K) -> bool
-    where K: Into<String>,
+        where
+            K: Into<String>,
     {
         self.index_map.contains_key(&k.into())
     }
 
+    /// Checks if the `JsonObject` contains the specified value.
     pub fn contains_value<V>(&self, v: V) -> bool
-    where V: Into<JsonValue>,
+        where
+            V: Into<JsonValue>,
     {
         let value = v.into();
         self.index_map.values().any(|x| *x == value)
     }
 
+    /// Returns an iterator over the key-value pairs in the `JsonObject`.
     pub fn iter(&self) -> Iter<String, JsonValue> {
         self.index_map.iter()
     }
 
+    /// Returns an iterator over the keys in the `JsonObject`.
     pub fn keys(&self) -> Keys<String, JsonValue> {
         self.index_map.keys()
     }
 
+    /// Returns an iterator over the values in the `JsonObject`.
     pub fn values(&self) -> Values<String, JsonValue> {
         self.index_map.values()
     }
 
+    /// Returns the number of key-value pairs in the `JsonObject`.
     pub fn len(&self) -> usize {
         self.index_map.len()
     }
 
+    /// Checks if the `JsonObject` is empty.
     pub fn is_empty(&self) -> bool {
         self.index_map.is_empty()
     }
 
+    /// Clears all key-value pairs from the `JsonObject`, leaving it empty.
     pub fn clear(&mut self) {
         self.index_map.clear()
     }
 
+    /// Merges another `JsonObject` into this one, replacing existing keys with new values.
     pub fn merge(&mut self, other: JsonObject) {
         for (key, value) in other.into_iter() {
             self.set(key, value);
         }
     }
 
+    /// Creates a new `JsonObject` containing only the key-value pairs that satisfy the predicate.
     pub fn filter<P>(&self, predicate: P) -> Self
-    where P: Fn(&String, &JsonValue) -> bool,
+        where
+            P: Fn(&String, &JsonValue) -> bool,
     {
         let filtered_map: IndexMap<String, JsonValue> =
             self.index_map.iter().filter(|(k, v)| predicate(k, v)).map(|(k, v)| (k.clone(), v.clone())).collect();
 
         JsonObject {
             index_map: filtered_map,
+        }
+    }
+
+    /// Maps each key-value pair in the `JsonObject` to a new value using the provided closure `mapper`.
+    ///
+    /// This method transforms each value in the `JsonObject` according to the provided closure `mapper`,
+    /// returning a new `JsonObject` where each value is replaced with the result of the closure.
+    ///
+    /// # Parameters
+    ///
+    /// - `mapper`: A closure that takes a reference to a key (`&String`) and a reference to a value (`&JsonValue`)
+    ///   and returns a new `JsonValue`.
+    ///
+    /// # Returns
+    ///
+    /// A new `JsonObject` where each value has been transformed according to the closure `mapper`.
+    pub fn map<F>(&self, mapper: F) -> JsonObject
+        where
+            F: Fn(&String, &JsonValue) -> JsonValue,
+    {
+        let mapped_map: IndexMap<String, JsonValue> =
+            self.index_map.iter().map(|(k, v)| (k.clone(), mapper(k, v))).collect();
+
+        JsonObject {
+            index_map: mapped_map,
         }
     }
 

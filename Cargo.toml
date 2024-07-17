@@ -12,6 +12,7 @@ indexmap = "2.2.6"
 jsonparser = "0.2.1"
 rusty_json_serialization = { version = "1.0.0", path = "src/rusty_json_serialization", optional = true }
 thiserror = "1.0.61"
+nom = "^7"
 
 [features]
 serialization = ["rusty_json_serialization"]
