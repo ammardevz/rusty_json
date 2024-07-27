@@ -15,3 +15,7 @@ nom = "^7"
 
 [features]
 serialization = ["rusty_json_serialization"]
+
+[lib]
+crate-type = ["lib"]
+doc = true
