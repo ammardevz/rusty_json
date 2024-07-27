@@ -1,5 +1,6 @@
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fmt::{Display, Formatter};
+use std::ops::{Index, IndexMut};
 
 use indexmap::{IndexMap, IndexSet};
 
@@ -31,6 +32,60 @@ impl JsonValue {
         T::try_from(self)
     }
 }
+
+impl Index<usize> for JsonValue {
+    type Output = JsonValue;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if let JsonValue::Array(array) = self {
+            if index >= array.len() {
+                panic!("Out of bounds index: {} >= {}", index, array.len());
+            }
+            &array[index]
+        } else {
+            &JsonValue::Null
+        }
+    }
+}
+
+impl IndexMut<usize> for JsonValue {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        if let JsonValue::Array(array) = self {
+            array.get_mut(index).expect("Index is out of bounds")
+        } else {
+            panic!("Attempted to index a non-array JsonValue")
+        }
+    }
+}
+
+
+impl Index<&str> for JsonValue {
+    type Output = JsonValue;
+
+    fn index(&self, key: &str) -> &Self::Output {
+        if let JsonValue::Object(object) = self {
+            object.get(key).expect("Key not found in JsonObject")
+        } else {
+            panic!("Attempted to index a non-object JsonValue")
+        }
+    }
+}
+
+
+impl IndexMut<&str> for JsonValue {
+    fn index_mut(&mut self, key: &str) -> &mut Self::Output {
+        if let JsonValue::Object(object) = self {
+            // Use `get_mut` to retrieve a mutable reference to the value.
+            object.get_mut(key).expect(&format!("Key {} not found in JsonObject", key))
+        } else {
+            panic!("Attempted to index a non-object JsonValue")
+        }
+    }
+}
+
+
+
+
 
 
 

@@ -160,6 +160,7 @@ let json_val = json!("Hello"); // will Produce JsonValue
 - Json Entity (manually)
 
 ```rust
+#[derive(Clone)]
 struct User {
     name: String,
     age: i32,
@@ -172,17 +173,34 @@ impl JsonEntity for User {
         obj.set("age", &self.age);
         JsonValue::Object(obj)
     }
+
+    fn from_json(raw: &str) -> Result<Self, ConversationError> {
+        let parsed = JsonParser::parse(raw)?;
+        if let JsonValue::Object(obj) = parsed {
+            let name = obj.get("name").ok_or_else(|| ConversationError::GenericError("Missing 'name'".to_string()))?
+                .parse::<String>()?;
+            let age = obj.get("age").ok_or_else(|| ConversationError::GenericError("Missing 'age'".to_string()))?
+                .parse::<i32>()?;
+            Ok(User { name, age })
+        } else {
+            Err(ConversationError::GenericError("Expected JSON object".to_string()))
+        }
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-
-    let u = User {
+    let user = User {
         name: "Ammar Dev".to_string(),
         age: 22,
     };
 
+    let json = user.to_json();
+    println!("{}", json);
 
-    println!("{}", u.to_json());
+    let json_str = json.to_string(); // Assuming to_string() is implemented
+    let parsed_user = User::from_json(&json_str)?;
+
+    println!("{}", parsed_user.to_json());
 
     Ok(())
 }
@@ -195,23 +213,30 @@ fn main() -> Result<(), Box<dyn Error>> {
 - Json Entity (Auto) [`Requires: serializing feature`]
 
 ```rust
-use std::error::Error;
-use rusty_json::extra::JsonEntity;
-
-#[derive(JsonEntity, Clone)]
+#[derive(JsonEntity, Clone, Debug)] // Derive JsonEntity for automatic serialization and deserialization
 struct User {
     name: String,
     age: i32,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-
-    let u = User {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Create an instance of User
+    let user = User {
         name: "Ammar Dev".to_string(),
         age: 22,
     };
 
-    println!("{}", u.to_json());
+    // Serialize User to JSON and print it
+    println!("Serialized JSON:\n{}", user.to_json());
+
+    // Example JSON string for deserialization
+    let json_str = r#"{"name": "Ammar Dev", "age": 22}"#;
+
+    // Deserialize JSON back to User
+    let deserialized_user: User = User::from_json(json_str)?;
+
+    // Print deserialized User
+    println!("Deserialized User: {:?}", deserialized_user);
 
     Ok(())
 }

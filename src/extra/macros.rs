@@ -8,16 +8,16 @@
 ///
 /// Creating a JSON object:
 /// ```
-/// use rusty_json::base::JsonValue;
+/// use rusty_json::base::{JsonObject, JsonValue};
 /// use rusty_json::json;
 ///
 /// let person = json!({
-///     name: "Alice",
-///     age: 30,
-///     is_student: false,
-///     hobbies: ["reading", "cycling"],
-///     address: null
-/// });
+///         name: "Alice",
+///         age: 30,
+///         is_student: false,
+///         hobbies: ["reading", "cycling"],
+///         address: null
+///     });
 ///
 /// assert_eq!(person["name"].parse::<String>().unwrap(), "Alice");
 /// assert_eq!(person["age"].parse::<i64>().unwrap(), 30);
@@ -28,14 +28,16 @@
 ///
 /// Creating a JSON array:
 /// ```
-/// use rusty_json::base::JsonValue;
+/// use rusty_json::base::{JsonArray, JsonValue};
 /// use rusty_json::json;
 ///
 /// let numbers = json!([1, 2, null, 4, 5]);
 ///
-/// assert_eq!(numbers[0].parse::<i64>().unwrap(), 1);
-/// assert_eq!(numbers[2], JsonValue::Null);
-/// assert_eq!(numbers[4].parse::<i64>().unwrap(), 5);
+/// let arr = JsonArray::from(numbers);
+///
+/// assert_eq!(arr[0].parse::<i64>().unwrap(), 1);
+/// assert_eq!(arr[2], JsonValue::Null);
+/// assert_eq!(arr[4].parse::<i64>().unwrap(), 5);
 /// ```
 ///
 /// Creating a simple JSON value:
