@@ -166,11 +166,11 @@ impl JsonArray {
         }
     }
 }
+
 impl Display for JsonArray {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         let mut iter = self.vec.iter().peekable();
-
         while let Some(json) = iter.next() {
             write!(f, "{}", json)?;
             if iter.peek().is_some() {
@@ -253,6 +253,27 @@ impl<T> From<BTreeSet<T>> for JsonArray
     fn from(value: BTreeSet<T>) -> Self {
         JsonArray {
             vec: value.into_iter().map(Into::into).collect()
+        }
+    }
+}
+
+impl IntoIterator for JsonArray {
+    type Item = JsonValue;
+    type IntoIter = std::vec::IntoIter<JsonValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.vec.into_iter()
+    }
+}
+
+impl<T> FromIterator<T> for JsonArray
+    where
+        T: Into<JsonValue>,
+{
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let vec = iter.into_iter().map(Into::into).collect();
+        JsonArray {
+            vec
         }
     }
 }

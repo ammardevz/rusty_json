@@ -1,3 +1,4 @@
+use std::convert::Infallible;
 use indexmap::IndexMap;
 use nom::{branch::alt, bytes::complete::tag, character::complete::{char, multispace0}, combinator::map, Finish, IResult, multi::separated_list0, number::complete::double, sequence::{delimited, separated_pair}};
 use nom::combinator::value;
@@ -19,19 +20,15 @@ pub enum ConversationError {
     /// Generic conversation error with a specific message.
     #[error("Conversation error: {0}")]
     GenericError(String),
+
+    /// Conversion error from CastError.
+    #[error(transparent)]
+    Cast(#[from] CastError),
+
+    /// Conversion error from Infallible.
+    #[error(transparent)]
+    Infallible(#[from] Infallible),
 }
-
-impl From<CastError> for ConversationError {
-    fn from(error: CastError) -> Self {
-        match error {
-            CastError::InvalidType => ConversationError::ParsingError("Invalid type for cast".to_string()),
-            CastError::OutOfRange => ConversationError::ParsingError("Value out of range".to_string()),
-
-            CastError::FieldNotFound(_) => ConversationError::GenericError("Field not found".to_string())
-        }
-    }
-}
-
 
 impl From<NomError<&str>> for ConversationError {
     fn from(error: NomError<&str>) -> Self {
@@ -52,7 +49,7 @@ impl JsonParser {
     /// A `Result` containing a `JsonValue` if parsing is successful, otherwise a `ConversationError`.
     pub fn parse(json_str: &str) -> Result<JsonValue, ConversationError> {
         // Attempt to parse the JSON string into a `JsonValue`
-        let (remaining, result) = parse_json_value(json_str).finish()?;
+        let (remaining, result) = parse_json_value(json_str).finish().map_err(|e| ConversationError::ParsingError(e.to_string()))?;
 
         // Check if there are any remaining unparsed characters
         if !remaining.trim().is_empty() {

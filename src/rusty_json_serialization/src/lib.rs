@@ -32,7 +32,7 @@ pub fn derive_json_entity(input: TokenStream) -> TokenStream {
                         rusty_json::base::JsonValue::Object(obj)
                     }
 
-                    fn from_raw(raw: &str) -> Result<Self, rusty_json::extra::ConversationError>
+                    fn from_json(raw: &str) -> Result<Self, rusty_json::extra::ConversationError>
                         where
                             Self: Sized,
                     {
@@ -121,7 +121,7 @@ pub fn derive_json_entity(input: TokenStream) -> TokenStream {
                         }
                     }
 
-                    fn from_raw(raw: &str) -> Result<Self, rusty_json::extra::ConversationError>
+                    fn from_json(raw: &str) -> Result<Self, rusty_json::extra::ConversationError>
                         where
                             Self: Sized,
                     {

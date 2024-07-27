@@ -2,8 +2,8 @@ use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 
 use indexmap::{IndexMap, IndexSet};
-use crate::base::casting::CastError;
 
+use crate::base::casting::CastError;
 use crate::base::json_array::JsonArray;
 use crate::base::json_object::JsonObject;
 
@@ -28,10 +28,7 @@ impl JsonValue {
         where
             T: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
     {
-        match T::try_from(self) {
-            Ok(value) => Ok(value),
-            Err(err) => Err(err),
-        }
+        T::try_from(self)
     }
 }
 
@@ -62,7 +59,6 @@ impl Clone for JsonValue {
     }
 }
 
-
 impl PartialEq for JsonValue {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
@@ -81,9 +77,15 @@ impl Display for JsonValue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             JsonValue::String(string) => write!(f, "\"{}\"", string)?,
-            JsonValue::Number(num) => write!(f, "{}", num)?,
+            JsonValue::Number(num) => {
+                if num.fract() == 0.0 {
+                    write!(f, "{}", *num as i64)?
+                } else {
+                    write!(f, "{}", num)?
+                }
+            },
             JsonValue::Null => write!(f, "null")?,
-            JsonValue::Boolean(bool) => write!(f, "{}", bool)?,
+            JsonValue::Boolean(b) => write!(f, "{}", b)?,
             JsonValue::Object(obj) => write!(f, "{}", obj)?,
             JsonValue::Array(arr) => write!(f, "{}", arr)?,
         }
@@ -349,6 +351,17 @@ impl<T> From<IndexSet<T>> for JsonValue
     }
 }
 
+impl<T> From<&IndexSet<T>> for JsonValue
+    where T: Into<JsonValue> + Clone {
+    fn from(value: &IndexSet<T>) -> Self {
+        let mut arr = JsonArray::new();
+        for object in value.clone() {
+            arr.push(object);
+        }
+        JsonValue::Array(arr)
+    }
+}
+
 impl<T> From<HashSet<T>> for JsonValue
     where T: Into<JsonValue>
 {
@@ -361,6 +374,17 @@ impl<T> From<HashSet<T>> for JsonValue
     }
 }
 
+impl<T> From<&HashSet<T>> for JsonValue
+    where T: Into<JsonValue> + Clone {
+    fn from(value: &HashSet<T>) -> Self {
+        let mut arr = JsonArray::new();
+        for object in value.clone() {
+            arr.push(object);
+        }
+        JsonValue::Array(arr)
+    }
+}
+
 impl<T> From<BTreeSet<T>> for JsonValue
     where T: Into<JsonValue>
 {
@@ -368,6 +392,17 @@ impl<T> From<BTreeSet<T>> for JsonValue
         let mut arr = JsonArray::new();
         for object in value {
             arr.push(object.into());
+        }
+        JsonValue::Array(arr)
+    }
+}
+
+impl<T> From<&BTreeSet<T>> for JsonValue
+    where T: Into<JsonValue> + Clone {
+    fn from(value: &BTreeSet<T>) -> Self {
+        let mut arr = JsonArray::new();
+        for object in value.clone() {
+            arr.push(object);
         }
         JsonValue::Array(arr)
     }
@@ -386,6 +421,19 @@ impl<K, V> From<HashMap<K, V>> for JsonValue
     }
 }
 
+impl<K, V> From<&HashMap<K, V>> for JsonValue
+    where K: Into<String> + Clone,
+          V: Into<JsonValue> + Clone
+{
+    fn from(value: &HashMap<K, V>) -> Self {
+        let mut obj = JsonObject::new();
+        for (k, v) in value {
+            obj.set(k.clone().into(), v.clone().into());
+        }
+        JsonValue::Object(obj)
+    }
+}
+
 impl<K, V> From<IndexMap<K, V>> for JsonValue
     where K: Into<String>,
           V: Into<JsonValue>
@@ -399,6 +447,19 @@ impl<K, V> From<IndexMap<K, V>> for JsonValue
     }
 }
 
+impl<K, V> From<&IndexMap<K, V>> for JsonValue
+    where
+        K: Into<String> + Clone,
+        V: Into<JsonValue> + Clone
+{
+    fn from(value: &IndexMap<K, V>) -> Self {
+        let mut obj = JsonObject::new();
+        for (k, v) in value {
+            obj.set(k.clone().into(), v.clone().into());
+        }
+        JsonValue::Object(obj)
+    }
+}
 
 impl From<()> for JsonValue {
     fn from(_value: ()) -> Self {

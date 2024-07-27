@@ -1,6 +1,6 @@
 [package]
 name = "rusty_json"
-version = "2.0.1"
+version = "2.0.3"
 edition = "2021"
 authors = ["Ammar Dev"]
 description = "A lightweight and efficient library for creating, reading, and writing JSON in Rust"
@@ -9,7 +9,6 @@ license = "MIT"
 
 [dependencies]
 indexmap = "2.2.6"
-jsonparser = "0.2.1"
 rusty_json_serialization = { version = "1.2.1", path = "src/rusty_json_serialization", optional = true }
 thiserror = "1.0.61"
 nom = "^7"

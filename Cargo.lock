@@ -25,12 +25,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "jsonparser"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "924a34a53a6770bac6c4c6af2ee1bf50ad20e0d850d9458e9caff1901b0ff1cf"
-
-[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -72,10 +66,9 @@ dependencies = [
 
 [[package]]
 name = "rusty_json"
-version = "2.0.1"
+version = "2.0.3"
 dependencies = [
  "indexmap",
- "jsonparser",
  "nom",
  "rusty_json_serialization",
  "thiserror",

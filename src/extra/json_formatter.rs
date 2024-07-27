@@ -1,13 +1,13 @@
 #![allow(dead_code)]
 
-use crate::base::JsonArray;
-use crate::base::JsonObject;
-use crate::base::JsonValue;
+use std::ops::Sub;
+use crate::base::{JsonArray, JsonObject, JsonValue};
 
 /// A formatter for JSON values that allows customization of indentation.
 pub struct JsonFormatter {
     indent: usize,
-    indent_char: char
+    indent_char: char,
+    current_indent: usize,
 }
 
 impl JsonFormatter {
@@ -25,8 +25,9 @@ impl JsonFormatter {
     /// # Returns
     ///
     /// A formatted string representation of the JSON value.
-    pub fn format(&self, target: &JsonValue) -> String {
-        self.format_value(target, self.indent, false)
+    pub fn format(&mut self, target: &JsonValue) -> String {
+        self.current_indent = self.indent;
+        self.format_value(target, self.current_indent, false)
     }
 
     /// Formats a JSON object into a pretty-printed string.
@@ -40,20 +41,21 @@ impl JsonFormatter {
     /// # Returns
     ///
     /// A formatted string representation of the JSON object.
-    fn pretty_object(&self, json_object: &JsonObject, indent_level: usize, is_child: bool) -> String {
+    fn pretty_object(&mut self, json_object: &JsonObject, indent_level: usize, is_child: bool) -> String {
         let mut s = String::new();
         let mut data = json_object.iter().peekable();
         s.push_str("{\n");
         while let Some((k, v)) = data.next() {
+            self.current_indent = indent_level + self.indent;
             s.push_str(&self.indent_str().repeat(indent_level));
-            s.push_str(&format!("\"{}\": {}", k, self.format_value(v, indent_level * 2, true)));
+            s.push_str(&format!("\"{}\": {}", k, self.format_value(v, self.current_indent, true)));
             if data.peek().is_some() {
                 s.push_str(",\n");
             }
         }
         s.push('\n');
         if is_child {
-            s.push_str(&self.indent_str().repeat(indent_level - (indent_level / 2)));
+            s.push_str(&self.indent_str().repeat(indent_level.sub(self.indent)));
         }
         s.push('}');
         s
@@ -70,20 +72,21 @@ impl JsonFormatter {
     /// # Returns
     ///
     /// A formatted string representation of the JSON array.
-    fn pretty_array(&self, json_array: &JsonArray, indent_level: usize, is_child: bool) -> String {
+    fn pretty_array(&mut self, json_array: &JsonArray, indent_level: usize, is_child: bool) -> String {
         let mut s = String::new();
         let mut data = json_array.iter().peekable();
         s.push_str("[\n");
         while let Some(json_value) = data.next() {
+            self.current_indent = indent_level + self.indent;
             s.push_str(&self.indent_str().repeat(indent_level));
-            s.push_str(&self.format_value(json_value, indent_level * 2, true));
+            s.push_str(&self.format_value(json_value, self.current_indent, true));
             if data.peek().is_some() {
                 s.push_str(",\n");
             }
         }
         s.push('\n');
         if is_child {
-            s.push_str(&self.indent_str().repeat(indent_level - (indent_level / 2)));
+            s.push_str(&self.indent_str().repeat(indent_level.sub(self.indent)));
         }
         s.push(']');
         s
@@ -100,7 +103,7 @@ impl JsonFormatter {
     /// # Returns
     ///
     /// A formatted string representation of the JSON value.
-    fn format_value(&self, json_value: &JsonValue, indent_level: usize, is_child: bool) -> String {
+    fn format_value(&mut self, json_value: &JsonValue, indent_level: usize, is_child: bool) -> String {
         match json_value {
             JsonValue::String(v) => format!("\"{}\"", v),
             JsonValue::Number(v) => v.to_string(),
@@ -120,7 +123,7 @@ impl JsonFormatter {
 /// A builder for constructing `JsonFormatter` instances.
 pub struct JsonFormatterBuilder {
     indent: usize,
-    indent_char: char
+    indent_char: char,
 }
 
 impl JsonFormatterBuilder {
@@ -128,7 +131,7 @@ impl JsonFormatterBuilder {
     pub fn new() -> Self {
         JsonFormatterBuilder {
             indent: 0,
-            indent_char: '\0'
+            indent_char: '\0',
         }
     }
 
@@ -156,7 +159,8 @@ impl JsonFormatterBuilder {
     pub fn build(self) -> JsonFormatter {
         JsonFormatter {
             indent: self.indent,
-            indent_char: self.indent_char
+            indent_char: self.indent_char,
+            current_indent: 0,
         }
     }
 }

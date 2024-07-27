@@ -193,6 +193,21 @@ impl JsonObject {
 
 }
 
+impl<K, V> FromIterator<(K, V)> for JsonObject
+    where
+        K: Into<String>,
+        V: Into<JsonValue>,
+{
+    fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
+        let map = iter.into_iter()
+            .map(|(k, v)| (k.into(), v.into()))
+            .collect();
+        JsonObject {
+            index_map: map
+        }
+    }
+}
+
 impl IntoIterator for JsonObject {
     type Item = (String, JsonValue);
     type IntoIter = IntoIter<String, JsonValue>;
@@ -215,6 +230,7 @@ impl Display for JsonObject {
         write!(f, "}}")
     }
 }
+
 
 impl From<JsonValue> for JsonObject {
     fn from(value: JsonValue) -> Self {
