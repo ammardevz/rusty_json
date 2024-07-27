@@ -50,3 +50,6 @@
 //! For more information, please refer to the module-level documentation in `base` and `extra`.
 pub mod base;
 pub mod extra;
+
+#[cfg(feature = "serialization")]
+extern crate rusty_json_serialization;
