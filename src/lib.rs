@@ -4,6 +4,8 @@
 //! within the `rusty_json_serialization` crate. It is designed to be used for
 //! straightforward JSON tasks in Rust projects.
 //!
+//! > **Note:** If you need a highly optimized and widely used JSON crate, consider using `serde_json`. While `Rusty Json` is designed to be simple and lightweight, it is still in its early stages and may not be as performant or feature-rich as `serde_json`.
+//!
 //! # Features
 //! - Serialization
 //!
