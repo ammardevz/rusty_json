@@ -1,11 +1,12 @@
 [package]
 name = "rusty_json"
-version = "2.0.4"
+version = "2.0.5"
 edition = "2021"
 authors = ["Ammar Dev"]
 description = "A lightweight and straightforward JSON library for Rust, providing basic JSON functionality, serialization, and manipulation."
 repository = "https://github.com/ammardevz/rusty_json"
 license = "MIT"
+exclude = ["tests/*"]
 
 [dependencies]
 indexmap = "2.2.6"
@@ -15,3 +16,5 @@ nom = "7.1.3"
 
 [features]
 serialization = ["rusty_json_serialization"]
+
+
