@@ -42,7 +42,8 @@
 ///
 /// Creating a simple JSON value:
 /// ```
-/// use rusty_json::json;
+/// use rusty_json::{is_null, json};
+/// use rusty_json::base::JsonValue;
 ///
 /// let string_value = json!("Hello, World!");
 /// let number_value = json!(42);
@@ -52,7 +53,7 @@
 /// assert_eq!(string_value.parse::<String>().unwrap(), "Hello, World!");
 /// assert_eq!(number_value.parse::<i64>().unwrap(), 42);
 /// assert_eq!(bool_value.parse::<bool>().unwrap(), true);
-/// assert_eq!(null_value.parse::<Option<String>>().unwrap(), None);
+/// assert!(is_null!(null_value));
 /// ```
 ///
 /// # Note
@@ -89,4 +90,36 @@ macro_rules! json {
     ($other:expr) => {{
         $crate::base::JsonValue::from($other)
     }};
+}
+
+/// Checks if a `JsonValue` is `Null`.
+///
+/// This macro simplifies the process of checking if a given `JsonValue` is `Null`.
+///
+/// # Examples
+///
+/// ```
+/// use rusty_json::base::JsonValue;
+/// use rusty_json::is_null;
+///
+/// let null_value = JsonValue::Null;
+/// let non_null_value = JsonValue::Number(42.into());
+///
+/// assert!(is_null!(null_value));
+/// assert!(!is_null!(non_null_value));
+/// ```
+///
+/// # Note
+///
+/// This macro matches a `JsonValue::Null` variant. Ensure that the
+/// `JsonValue` type is available in your crate's base module or adjust the
+/// paths accordingly.
+#[macro_export]
+macro_rules! is_null {
+    ($json:expr) => {
+        match $json {
+            JsonValue::Null => true,
+            _ => false,
+        }
+    };
 }

@@ -73,6 +73,7 @@ impl TryFrom<JsonValue> for bool {
     fn try_from(value: JsonValue) -> Result<Self, Self::Error> {
         match value {
             JsonValue::Boolean(bool) => Ok(bool),
+            JsonValue::Null => Ok(false),
             _ => Err(CastError::InvalidType),
         }
     }
@@ -84,6 +85,7 @@ impl TryFrom<&JsonValue> for bool {
     fn try_from(value: &JsonValue) -> Result<Self, Self::Error> {
         match value {
             JsonValue::Boolean(bool) => Ok(*bool),
+            JsonValue::Null => Ok(false),
             _ => Err(CastError::InvalidType),
         }
     }
@@ -102,6 +104,7 @@ impl<T> TryFrom<&JsonValue> for Vec<T>
                     .map(|item| T::try_from(item))
                     .collect::<Result<Vec<T>, _>>()
             }
+            JsonValue::Null => Ok(Vec::new()),
             _ => Err(CastError::InvalidType),
         }
     }
@@ -120,6 +123,7 @@ impl<T> TryFrom<JsonValue> for Vec<T>
                     .map(T::try_from)
                     .collect::<Result<Vec<T>, _>>()
             }
+            JsonValue::Null => Ok(Vec::new()),
             _ => Err(CastError::InvalidType),
         }
     }
@@ -133,11 +137,12 @@ impl TryFrom<&JsonValue> for JsonValue {
     }
 }
 
+
 macro_rules! register_map {
     ($type:ident) => {
         impl<V> TryFrom<&JsonValue> for $type<String, V>
-            where
-                V: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
+        where
+            V: for<'a> TryFrom<&'a JsonValue, Error = CastError>,
         {
             type Error = CastError;
 
@@ -151,14 +156,15 @@ macro_rules! register_map {
                         }
                         Ok(map)
                     },
+                    JsonValue::Null => Ok($type::new()),
                     _ => Err(CastError::InvalidType),
                 }
             }
         }
 
         impl<V> TryFrom<JsonValue> for $type<String, V>
-            where
-                V: TryFrom<JsonValue, Error = CastError>,
+        where
+            V: TryFrom<JsonValue, Error = CastError>,
         {
             type Error = CastError;
 
@@ -172,14 +178,13 @@ macro_rules! register_map {
                         }
                         Ok(map)
                     },
+                    JsonValue::Null => Ok($type::new()),
                     _ => Err(CastError::InvalidType),
                 }
             }
         }
     };
 }
-
-
 
 /// Registering TryFrom for integers
 macro_rules! register_tfi {
@@ -200,6 +205,7 @@ macro_rules! register_tfi {
                             Ok(int_value as Self)
                         }
                     },
+                    JsonValue::Null => Ok(0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }
@@ -221,6 +227,7 @@ macro_rules! register_tfi {
                             Ok(int_value as Self)
                         }
                     },
+                    JsonValue::Null => Ok(0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }
@@ -237,6 +244,7 @@ macro_rules! register_tff {
             fn try_from(value: JsonValue) -> Result<Self, Self::Error> {
                 match value {
                     JsonValue::Number(num) => Ok(num as Self),
+                    JsonValue::Null => Ok(0.0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }
@@ -248,6 +256,7 @@ macro_rules! register_tff {
             fn try_from(value: &JsonValue) -> Result<Self, Self::Error> {
                 match value {
                     JsonValue::Number(num) => Ok(*num as Self),
+                    JsonValue::Null => Ok(0.0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }
@@ -274,6 +283,7 @@ macro_rules! register_tfu {
                             Ok(int_value as Self)
                         }
                     }
+                    JsonValue::Null => Ok(0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }
@@ -295,6 +305,7 @@ macro_rules! register_tfu {
                             Ok(int_value as Self)
                         }
                     }
+                    JsonValue::Null => Ok(0 as Self),
                     _ => Err(CastError::InvalidType),
                 }
             }

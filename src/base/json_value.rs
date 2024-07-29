@@ -84,7 +84,18 @@ impl IndexMut<&str> for JsonValue {
 }
 
 
+impl IntoIterator for JsonValue {
+    type Item = JsonValue;
+    type IntoIter = Box<dyn Iterator<Item = Self::Item>>;
 
+    fn into_iter(self) -> Self::IntoIter {
+        match self {
+            JsonValue::Array(array) => Box::new(array.into_iter()),
+            JsonValue::Object(object) => Box::new(object.into_iter().map(|(_, v)| v)),
+            _ => panic!("Called into_iter on a non-iterable JsonValue"),
+        }
+    }
+}
 
 
 

@@ -48,7 +48,28 @@
 //! - `extra`: Includes additional utilities and extensions.
 //!
 //! For more information, please refer to the module-level documentation in `base` and `extra`.
+
+/// `base` module for JSON operations.
+///
+/// This module provides the core types and functionality needed for working
+/// with JSON data. It includes the definitions for JSON values, objects, and
+/// arrays, as well as utilities for manipulating these types.
+///
+/// # Types
+/// - `JsonValue`: Represents a JSON value, which can be a string, number, boolean, null, object, or array.
+/// - `JsonObject`: Represents a JSON object, which is a collection of key-value pairs.
+/// - `JsonArray`: Represents a JSON array, which is an ordered list of values.
 pub mod base;
+
+/// `extra` module for additional JSON utilities.
+///
+/// This module includes extended functionality and utilities for working
+/// with JSON data, such as parsing and conversion traits.
+///
+/// # Features
+/// - `JsonParser`: Provides functionality to parse JSON strings into `JsonValue`.
+/// - `JsonEntity`: Trait for types that can be converted to and from JSON.
+/// - `ConversationError`: Error type for handling conversion errors.
 pub mod extra;
 
 #[cfg(feature = "serialization")]

@@ -1,10 +1,9 @@
 
 # Rusty Json 
 
-A lightweight and efficient library for creating, reading, and writing JSON in Rust
+A lightweight and straightforward JSON library for Rust, providing basic JSON functionality, serialization, and manipulation.
 
-*"In-code docs coming in the next updates."*
-
+> **Note:** If you need a highly optimized and widely used JSON crate, consider using `serde_json`. While `Rusty Json` is designed to be simple and lightweight, it is still in its early stages and may not be as performant or feature-rich as `serde_json`.
 #  Usage
 
 ## Base 

@@ -3,6 +3,6 @@ mod json_array;
 mod json_value;
 pub mod casting;
 
-pub type JsonValue = json_value::JsonValue;
-pub type JsonObject = json_object::JsonObject;
-pub type JsonArray = json_array::JsonArray;
+pub use json_value::JsonValue;
+pub use json_object::JsonObject;
+pub use json_array::JsonArray;

@@ -1,11 +1,14 @@
 use std::convert::Infallible;
+
 use indexmap::IndexMap;
 use nom::{branch::alt, bytes::complete::tag, character::complete::{char, multispace0}, combinator::map, Finish, IResult, multi::separated_list0, number::complete::double, sequence::{delimited, separated_pair}};
-use nom::combinator::value;
+use nom::bytes::complete::{escaped_transform, is_not, take_while_m_n};
+use nom::combinator::{map_opt, value};
 use nom::error::Error as NomError;
+use nom::sequence::preceded;
 use thiserror::Error;
-use crate::base::casting::CastError;
 
+use crate::base::casting::CastError;
 use crate::base::JsonValue;
 
 pub struct JsonParser;
@@ -79,13 +82,30 @@ fn ws<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E
     delimited(multispace0, inner, multispace0)
 }
 
-fn parse_str(input: &str) -> IResult<&str, &str> {
-    delimited(
-        char('"'),
-        nom::bytes::complete::take_while(|c| c != '"'),
-        char('"')
-    )(input)
+fn parse_str(input: &str) -> IResult<&str, String> {
+    let transform_escaped = escaped_transform(
+        is_not("\\\""),
+        '\\',
+        alt((
+            value('\"', char('\"')),
+            value('\\', char('\\')),
+            value('/', char('/')),
+            value('\x08', char('b')),  // \b
+            value('\x0C', char('f')),  // \f
+            value('\n', char('n')),
+            value('\r', char('r')),
+            value('\t', char('t')),
+            map_opt(
+                preceded(char('u'), take_while_m_n(4, 4, |c: char| c.is_digit(16))),
+                |s| u16::from_str_radix(s, 16).ok().map(|cp| std::char::from_u32(cp as u32).unwrap())
+            )
+        )),
+    );
+    delimited(char('"'), transform_escaped, char('"'))(input)
 }
+
+
+
 
 fn parse_bool(input: &str) -> IResult<&str, bool> {
     alt((
