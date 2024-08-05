@@ -1,14 +1,18 @@
+Here's a revised version of your README that includes a note about the crate no longer receiving updates and suggests using `serde_json` instead:
 
-# Rusty Json 
+---
+
+# Rusty Json
 
 A lightweight and straightforward JSON library for Rust, providing basic JSON functionality, serialization, and manipulation.
 
-> **Note:** If you need a highly optimized and widely used JSON crate, consider using `serde_json`. While `Rusty Json` is designed to be simple and lightweight, it is still in its early stages and may not be as performant or feature-rich as `serde_json`.
-#  Usage
+> **Note:** This crate is no longer being actively maintained due to various issues and limited development skills. For a more robust and widely used JSON library, consider using `serde_json`. While `Rusty Json` is designed to be simple and lightweight, it may not be as performant or feature-rich as `serde_json`.
 
-## Base 
+## Usage
 
-- Json Object
+### Base 
+
+- **Json Object**
 
 ```rust
 let mut json_obj = JsonObject::new();
@@ -23,7 +27,7 @@ println!("{}", json_obj);
 {"msg": "Github", "Name": "Ammar Dev", "number": 234}
 ```
 
-- Json Array
+- **Json Array**
 
 ```rust
 let mut json_arr = JsonArray::new();
@@ -52,7 +56,7 @@ println!("{}", json_arr);
 [1, 2, "Value 1", "Value 2"]
 ```
 
-- Json Value
+- **Json Value**
 
 ```rust
 fn main() -> Result<(), Box<dyn Error>> {
@@ -84,7 +88,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 ## Extra
 
-- Parser
+- **Parser**
 
 ```rust
 let raw_json = r#"
@@ -106,7 +110,7 @@ println!("{}", json_obj);
 {"name": "Ammar Dev", "age": 99, "email": "AmmarDev@example.com", "isEmployed": false}
 ```
 
-- Formatter
+- **Formatter**
 
 ```rust
 let mut json_obj = JsonObject::new();
@@ -136,7 +140,7 @@ println!("{}", formatter.format(json_obj));
 }
 ```
 
-- Macros
+- **Macros**
 
 ```rust
 let json_obj = json!({
@@ -151,12 +155,12 @@ let json_arr = json!([
     "String 2"
 ]); // will produce JsonArray
 
-let json_val = json!("Hello"); // will Produce JsonValue
+let json_val = json!("Hello"); // will produce JsonValue
 ```
 
-# Implementing
+## Implementing
 
-- Json Entity (manually)
+- **Json Entity (manually)**
 
 ```rust
 #[derive(Clone)]
@@ -209,7 +213,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 {"name": "Ammar Dev", "age": 22}
 ```
 
-- Json Entity (Auto) [`Requires: serializing feature`]
+- **Json Entity (Auto) [`Requires: serializing feature`]**
 
 ```rust
 #[derive(JsonEntity, Clone, Debug)] // Derive JsonEntity for automatic serialization and deserialization
@@ -240,16 +244,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+
 ```json
 {"name": "Ammar Dev", "age": 22}
 ```
 
-
-# Copyrights
+## Copyrights
 
 All rights reserved for Ammar Dev <br>
 This project is licensed with [MIT LICENSE](https://github.com/ammardevz/rusty_json/blob/master/LICENSE)
 
+---
 
-
-
+Feel free to adjust the details according to your needs!
